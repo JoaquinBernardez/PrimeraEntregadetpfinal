@@ -16,7 +16,7 @@ header {
 
 .titulo {
 	margin: 1rem 5rem;
-	color: rgb(255, 71, 71);
+	color: indianred;
 	font-size: 3.5rem;
 }
 
@@ -97,6 +97,7 @@ img {
 
 .modal-carrito h3 {
 	color: indianred;
+	font-size: 2rem;
 	padding-bottom: 5px;
 }
 .modal-carrito #carritoCerrar {
@@ -110,7 +111,7 @@ img {
 }
 
 .productoEnCarrito {
-	border-left: 5px solid lightblue;
+	border-left: 5px solid red;
 	border-bottom-left-radius: 3px;
 	border-top-left-radius: 3px;
 	margin: 5px 0;

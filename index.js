@@ -5,7 +5,43 @@ let botonVaciar = document.getElementById("vaciar-carrito");
 let contadorCarrito = document.getElementById("contadorCarrito");
 let carritoCerrar = document.getElementById("carritoCerrar");
 let precioTotal = document.getElementById("precioTotal");
-const carrito = [];
+let carrito = [];
+
+let actualizarCarrito = () => {
+	contenedorCarrito.innerHTML = "";
+	if (carrito.length > 0) {
+		carrito.forEach((prod) => {
+			let div = document.createElement("div");
+			div.className = "productoEnCarrito";
+			div.innerHTML = `
+		<p>${prod.nombre}</p>
+		<p>Precio: ${prod.precio}</p>
+		<p>Cantidad: <span id="cantidad">${prod.cantidad}</span></p>
+		<button onclick = "eliminarDelCarrito(${prod.id})"class="boton-eliminar"><i class="fas fa-trash-alt"></i></button>
+		`;
+
+			contenedorCarrito.appendChild(div);
+
+			localStorage.setItem("carrito", JSON.stringify(carrito));
+		});
+	} else {
+		contenedorCarrito.innerHTML = "Carrito vacio";
+	}
+	contadorCarrito.innerText = carrito.length;
+	precioTotal.innerText = carrito.reduce((acc, prod) => acc + prod.precio, 0);
+};
+
+let eliminarDelCarrito = (prodId) => {
+	let item = carrito.find((prod) => prod.id === prodId);
+	let indice = carrito.indexOf(item);
+	if (item.cantidad > 1) {
+		item.cantidad--;
+	} else {
+		carrito.splice(indice, 1);
+	}
+	actualizarCarrito();
+	tostadaEliminar(item.nombre);
+};
 
 document.addEventListener("DOMContentLoaded", () => {
 	if (localStorage.getItem("carrito")) {
@@ -34,6 +70,7 @@ stockDeProductos.forEach((producto) => {
 	let boton = document.getElementById(`agregar${producto.id}`);
 	boton.addEventListener("click", () => {
 		agregarAlCarrito(producto.id);
+		tostadaAgregar(producto.nombre);
 	});
 });
 
@@ -49,38 +86,41 @@ let agregarAlCarrito = (prodId) => {
 	} else {
 		let item = stockDeProductos.find((prod) => prod.id === prodId);
 		carrito.push(item);
-		console.log(carrito);
 	}
 	actualizarCarrito();
 };
-let eliminarDelCarrito = (prodId) => {
-	let item = carrito.find((prod) => prod.id === prodId);
-	let indice = carrito.indexOf(item);
-	carrito.splice(indice, 1);
-	actualizarCarrito();
-};
 
-let actualizarCarrito = () => {
-	contenedorCarrito.innerHTML = "";
-	carrito.forEach((prod) => {
-		let div = document.createElement("div");
-		div.className = "productoEnCarrito";
-		div.innerHTML = `
-		<p>${prod.nombre}</p>
-		<p>Precio: ${prod.precio}</p>
-		<p>Cantidad: <span id="cantidad">${prod.cantidad}</span></p>
-		<button onclick = "eliminarDelCarrito(${prod.id})"class="boton-eliminar"><i class="fas fa-trash-alt"></i></button>
-		`;
-		contenedorCarrito.appendChild(div);
+function tostadaAgregar(productoNombre) {
+	Toastify({
+		text: `Se ha agregado ${productoNombre} al carrito.`,
+		duration: 2500,
+		close: true,
+		position: "left",
+		gravity: "bottom",
+		style: {
+			backgroundImage: "url(./images/fondoToast.png)",
+		},
+		offset: {
+			y: 16,
+		},
+	}).showToast();
+}
 
-		localStorage.setItem("carrito", JSON.stringify(carrito));
-	});
-	contadorCarrito.innerText = carrito.length;
-	precioTotal.innerText = carrito.reduce((acc, prod) => acc + prod.precio, 0);
-};
-
-/* Le agrego eventos al modal para ser */
-
+function tostadaEliminar(productoNombre) {
+	Toastify({
+		text: `Se ha eliminado ${productoNombre} del carrito.`,
+		duration: 2500,
+		close: true,
+		position: "right",
+		gravity: "bottom",
+		style: {
+			backgroundImage: "url(./images/fondoToast.jpg)",
+		},
+		offset: {
+			y: 16,
+		},
+	}).showToast();
+}
 const contenedorModal = document.getElementsByClassName("modal-contenedor")[0];
 const botonAbrir = document.getElementById("boton-carrito");
 const botonCerrar = document.getElementById("carritoCerrar");
