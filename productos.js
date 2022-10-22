@@ -1,3 +1,4 @@
+/* Creo mi array con los productos a elegir */
 let stockDeProductos = [
 	{
 		id: 1,
